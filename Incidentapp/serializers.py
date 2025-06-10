@@ -157,7 +157,7 @@ class immediateSerializer(serializers.ModelSerializer):
 class IncidentSerializer(serializers.ModelSerializer):
     immediateactions = immediateSerializer(required =False,many=True)
     status=statusSerializer(required=False,many=True)
-  
+
  
 
     class Meta:
@@ -177,8 +177,7 @@ class IncidentSerializer(serializers.ModelSerializer):
         pocss=depp.poc.first()
         validated_data["assigned_pocs"]=pocss
         print(validated_data["assigned_pocs"])
-        
-        
+
       
         ticket = Incident_ticket.objects.create(**validated_data)
         
@@ -196,9 +195,13 @@ class IncidentSerializer(serializers.ModelSerializer):
             employees = action_data.pop("emp_id")
             action = ImmediateAction.objects.create(incident_id=ticket,**action_data)
         for i in employees:
-            action.emp_id.add(i)
+            action.emp_id.add(i)  
             # actionss.emp_id.set(employees)
 
+
+        status_obj = Status.objects.get(status="Open")
+        Statustaken.objects.create(status_id=status_obj, id=ticket)
+        print(status_obj.status)
 
         
         return ticket
