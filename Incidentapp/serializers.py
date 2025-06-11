@@ -68,12 +68,12 @@ class stakeholderSerializer(serializers.ModelSerializer):
 class recommSerializer(serializers.ModelSerializer):
     class Meta:
         model=Recommendations
-        fields="__all__"
+        fields=["actions","emp_id"]
 
 class followSerializer(serializers.ModelSerializer):
     class Meta:
         model=FollowUpActions
-        fields="__all__"
+        fields=["actions_title","responsible_emp_id"]
 
 class evidenceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -157,12 +157,13 @@ class immediateSerializer(serializers.ModelSerializer):
 class IncidentSerializer(serializers.ModelSerializer):
     immediateactions = immediateSerializer(required =False,many=True)
     status=statusSerializer(required=False,many=True)
-
+    Follow=followSerializer(required=False,many=True)
+    Recommendations=recommSerializer(required=False,many=True)
  
 
     class Meta:
         model = Incident_ticket
-        fields = ["id","reporter","report_type","location","department","description","contributing_factor","individual_involved","witnesses","immediateactions","assigned_pocs","status"]
+        fields = ["id","reporter","report_type","location","department","description","contributing_factor","individual_involved","witnesses","immediateactions","assigned_pocs","status","Follow","Recommendations"]
           
         
 
@@ -171,6 +172,9 @@ class IncidentSerializer(serializers.ModelSerializer):
         individual_involved = validated_data.pop("individual_involved")
         witnesses = validated_data.pop("witnesses")
         immediate_actions_data = validated_data.pop('immediateactions')
+        FollowUpActions_data=validated_data.pop('Follow')
+        Recommendations_data=validated_data.pop("Recommendations")
+
        
         
         depp=validated_data.get("department")
@@ -187,7 +191,14 @@ class IncidentSerializer(serializers.ModelSerializer):
             ticket.individual_involved.add(i)
         for i in witnesses:
             ticket.witnesses.add(i)
-      
+        for emp_data in FollowUpActions_data:
+            FollowUpActions.objects.create(**emp_data, id=ticket)
+        
+
+        print(FollowUpActions_data)
+
+        for recom_data in Recommendations_data:
+            Recommendations.objects.create(id=ticket,**recom_data)
         
 
 

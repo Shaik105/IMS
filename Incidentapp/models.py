@@ -76,7 +76,7 @@ class Recommendations(models.Model):
     recomm_id=models.AutoField(primary_key=True)
     actions=models.CharField(max_length=100)
     emp_id=models.ForeignKey("employee",on_delete=models.CASCADE)
-    id=models.ForeignKey("Incident_ticket",on_delete=models.CASCADE)
+    id=models.ForeignKey("Incident_ticket",on_delete=models.CASCADE,null=True,related_name="Recommendations")
 
 
 
@@ -85,7 +85,7 @@ class FollowUpActions(models.Model):
     actions_title=models.CharField(max_length=100)
     date_Completed=models.DateField(auto_now_add=True)
     responsible_emp_id=models.ForeignKey("employee",on_delete=models.CASCADE)
-    id=models.ForeignKey("Incident_ticket",on_delete=models.CASCADE)
+    id=models.ForeignKey("Incident_ticket",on_delete=models.CASCADE,null=True,related_name="Follow")
 
 class Status(models.Model):
     status_id=models.AutoField(primary_key=True)
